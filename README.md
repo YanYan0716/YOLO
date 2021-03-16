@@ -1,4 +1,4 @@
 # YOLO
 
 
-Reference: https://www.youtube.com/watch?v=Grir6TZbc1M
+Reference: https://www.youtube.com/watch?v=n9_XyCGr-MI&t=4980s
