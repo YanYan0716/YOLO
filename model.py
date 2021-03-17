@@ -21,3 +21,7 @@ architecture_config = [
     (3, 1024, 1, 1),
     (3, 1024, 1, 1),
 ]
+
+class CNNBlock(nn.Module):
+    def __init__(self, in_channels, out_channels, **kwargs):
+        pass
