@@ -16,7 +16,7 @@ class YoloLoss(nn.Module):
         self.lambda_coord = 5
 
     def forward(self, predictions, target):
-        predictions = predictions.reshape(-1, self.S, self.C+self.B*5)
+        predictions = predictions.reshape(-1, self.S, self.S, self.C+self.B*5)
         iou_b1 = intersection_over_union(predictions[..., 21:25], target[..., 21:25])
         iou_b2 = intersection_over_union(predictions[..., 26:30], target[..., 21:25])
 
