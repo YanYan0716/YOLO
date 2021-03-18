@@ -13,8 +13,6 @@ def intersection_over_union(boxes_preds, boxes_labels, box_format='midpoint'):
         box2_y1 = boxes_labels[..., 1:2] - boxes_labels[..., 3:4] / 2
         box2_x2 = boxes_labels[..., 0:1] + boxes_labels[..., 2:3] / 2
         box2_y2 = boxes_labels[..., 1:2] + boxes_labels[..., 3:4] / 2
-    # print(box1_x1,box1_x2,box1_y1,box1_y2)
-    # print(box2_x1, box2_x2, box2_y1, box2_y2)
 
     x1 = torch.max(box1_x1, box2_x1)
     y1 = torch.max(box1_y1, box2_y1)
