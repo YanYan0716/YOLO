@@ -110,11 +110,18 @@ def convert_cellboxes(predictions, S=7):
     return converted_preds
 
 
-
-
-
 def cellboxes_to_boxes(out, S=7):
     convert_pred = convert_cellboxes(out).reshape(out.shape[0], S*S, -1)
+    convert_pred[..., 0] = convert_pred[..., 0].long()
+    all_bboxes = []
+
+    for ex_iou in range(out.shape[0]):
+        bboxes = []
+        for bbox_idx in range(S*S):
+            bboxes.append([x.item() for x in convert_pred[ex_iou, bbox_idx, :]])
+        all_bboxes.append(bboxes)
+    return all_bboxes
+
 
 
 def get_bboxes(loader, model, iou_threshold, pred_format='cells', box_format='midpoint', device='CUDA'):
