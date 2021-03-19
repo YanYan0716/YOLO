@@ -123,7 +123,6 @@ def cellboxes_to_boxes(out, S=7):
     return all_bboxes
 
 
-
 def get_bboxes(loader, model, iou_threshold, pred_format='cells', box_format='midpoint', device='CUDA'):
     all_pred_boxes = []
     all_true_boxes = []
