@@ -101,6 +101,14 @@ def convert_cellboxes(predictions, S=7):
     best_boxes = bboxes1*(1-best_box)+bboxes2*(best_box)
     cell_indices = torch.arange(7).repeat(batch_size, 7, 1).unsqueeze(-1)
     x = 1/S*(best_boxes[..., :1]+cell_indices)
+    y = 1/S*(best_boxes[..., 1:2] +cell_indices.permute(0, 2, 1, 3))
+    w_y = 1/S*best_boxes[..., 2:4]
+    converted_bboxes = torch.cat((x, y, w_y), dim=-1)
+    predicted_class = predictions[..., 20].argmax(-1).unsqueeze(-1)
+    best_confidence = torch.max(predictions[..., 20], predictions[..., 25]).unsqueeze(-1)
+    converted_preds = torch.cat((predicted_class, best_confidence, converted_bboxes), dim=-1)
+    return converted_preds
+
 
 
 
