@@ -40,18 +40,24 @@ class VOCAnnotationTransform(object):
 
             box_info = object_list[i].getElementsByTagName('bndbox')[0]
 
-            xmin = int(box_info.childNodes[1].childNodes[0].nodeValue) / float(width)
-            ymin = int(box_info.childNodes[3].childNodes[0].nodeValue) / float(height)
-            xmax = int(box_info.childNodes[5].childNodes[0].nodeValue) / float(width)
-            ymax = int(box_info.childNodes[7].childNodes[0].nodeValue) / float(height)
+            xmin = int(box_info.childNodes[1].childNodes[0].nodeValue) #/ float(width)
+            ymin = int(box_info.childNodes[3].childNodes[0].nodeValue) #/ float(height)
+            xmax = int(box_info.childNodes[5].childNodes[0].nodeValue) #/ float(width)
+            ymax = int(box_info.childNodes[7].childNodes[0].nodeValue) #/ float(height)
 
-            info_list = [class_index, round(xmin, 3), round(ymin, 3), round(xmax, 3), round(ymax, 3)]
+            # 转换为中心坐标和宽高
+            xmean = ( (xmin+xmax)/2 ) / float(width)
+            ymean = ( (ymin+ymax)/2 ) / float(height)
+            box_width = abs(xmax - xmin) / float(width)
+            box_height = abs(ymax - ymin) / float(height)
+
+            info_list = [class_index, round(xmean, 3), round(ymean, 3), round(box_width, 3), round(box_height, 3)]
             objects_info.append(info_list)
 
-        return img_name, objects_info
+        return (img_name, objects_info)
 
 
 if __name__ == '__main__':
     test = VOCAnnotationTransform()
     result = test.get_info('./000009.xml')
-    print(result)
+    print(len(result))
