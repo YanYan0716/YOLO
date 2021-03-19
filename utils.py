@@ -90,6 +90,42 @@ def mean_average_precision(pred_boxes, true_boxes, iou_threshold=0.5, box_format
     return sum(average_precision)/len(average_precision)
 
 
+def convert_cellboxes(predictions, S=7):
+    predictions = predictions.to('cpu')
+    batch_size = predictions.shape[0]
+    predictions = predictions.reshape(batch_size, 7, 7, 30)
+    bboxes1 = predictions[..., 21:25]
+    bboxes2 = predictions[..., 26:30]
+    scores = torch.cat((predictions[..., 20].unsqeeze(0), predictions[..., 25].unsqueeze(0)), dim=0)
+    best_box = scores.argmax(0).unsqueeze(-1)
+    best_boxes = bboxes1*(1-best_box)+bboxes2*(best_box)
+    cell_indices = torch.arange(7).repeat(batch_size, 7, 1).unsqueeze(-1)
+    x = 1/S*(best_boxes[..., :1]+cell_indices)
+
+
+
+
+def cellboxes_to_boxes(out, S=7):
+    convert_pred = convert_cellboxes(out).reshape(out.shape[0], S*S, -1)
+
+
+def get_bboxes(loader, model, iou_threshold, pred_format='cells', box_format='midpoint', device='CUDA'):
+    all_pred_boxes = []
+    all_true_boxes = []
+
+    model.eval()
+    train_idx = 0
+
+    for batch_idx, (x, labels) in enumerate(loader):
+        x = x.to(device)
+        labels = labels.to(device)
+
+        with torch.no_grad():
+            predictions = model(x)
+
+        batch_size = x.shape[0]
+
+
 def testIOU():
     width = 500
     height = 330

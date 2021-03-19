@@ -30,7 +30,7 @@ class VOCDataset(Dataset):
         boxes = torch.tensor(boxes)
 
         if self.transform:
-            image, boxes = self.transform(image, boxes)
+            image = self.transform(image)
 
         # convert to cell
         label_matrix = torch.zeros((self.S, self.S, self.C+self.B*5))

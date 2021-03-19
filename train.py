@@ -26,15 +26,15 @@ IMG_DIR = 'data/images'
 LABEL_DIR = 'data/labels'
 
 
-class Compose(object):
-    def __init__(self, transforms):
-        self.transforms = transforms
+# class Compose(object):
+#     def __init__(self, transforms):
+#         self.transforms = transforms
+#
 
-
-transforms = Compose(
-    [transforms.Resize(448, 448),
-     transforms.ToTensor(),]
-)
+# transforms = Compose(
+#     [transforms.Resize(448, 448),
+#      transforms.ToTensor(),]
+# )
 
 
 def train_fn(train_loader, model, optimizer, loss_fn):
@@ -66,18 +66,20 @@ def main():
     if LOAD_MODEL:
         pass
 
-    train_dataset = VOCDataset(
-        csv_file='',
-        img_root=IMG_DIR,
-        S=7,
-        B=2,
-        C=20,
-    )
+    train_transform = transforms.Compose([
+        transforms.Resize(size=(448, 448)),
+        transforms.ToTensor()
+    ])
+    train_dataset = VOCDataset(csv_file='', img_root=IMG_DIR, S=7, B=2, C=20, transform=train_transform)
 
+    test_transform = transforms.Compose([
+        transforms.Resize(size=(448, 448)),
+        transforms.ToTensor()
+    ])
     test_dataset = VOCDataset(
         csv_file='',
-        transform=transforms,
         img_root=IMG_DIR,
+        transform=test_transform
     )
 
     train_loader = DataLoader(
@@ -99,7 +101,6 @@ def main():
     )
 
     for epoch in range(EPOCHS):
-        # pred_boxes, target_boxes =
         train_fn(
             train_loader,
             model,
